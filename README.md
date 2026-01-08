@@ -7,7 +7,7 @@ A specialized research tool for collecting Facebook page data including posts, e
 - `ithinkfinal3.py`: Main scraping script
 - `facebook_cookies.txt`: Authentication file (user-generated)
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Installation
 

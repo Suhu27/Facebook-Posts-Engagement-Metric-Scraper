@@ -24,7 +24,7 @@ pip install requests
 
 ### 3. Configuration (`ithinkfinal3.py`)
 
-#### Configuration: Retrieving GraphQL Doc IDs
+Retrieving GraphQL Doc IDs
 
 Facebook frequently rotates their GraphQL Document IDs. If the scraper returns 400 Bad Request or fails to fetch data, you likely need to update the `doc_id` constants in the main script.
 

@@ -1,8 +1,8 @@
-# Facebook Page Scraper (Hybrid Pagination)
+# Facebook Post Scraper
 
 A specialized research tool for collecting Facebook page data including posts, engagement metrics, and video view counts. Features hybrid pagination for deep timeline scraping and robust session handling.
 
-## 📂 Repository Contents
+## Repository Contents
 
 - `ithinkfinal3.py`: Main scraping script
 - `facebook_cookies.txt`: Authentication file (user-generated)
@@ -24,7 +24,7 @@ pip install requests
 
 ### 3. Configuration (`ithinkfinal3.py`)
 
-#### ⚙️ Configuration: Retrieving GraphQL Doc IDs
+#### Configuration: Retrieving GraphQL Doc IDs
 
 Facebook frequently rotates their GraphQL Document IDs. If the scraper returns 400 Bad Request or fails to fetch data, you likely need to update the `doc_id` constants in the main script.
 
@@ -78,7 +78,7 @@ COMMENT_DOC_ID  = '25515916584706508'  # <--- Paste Comment ID here
 VIDEO_DOC_ID    = '25334326422853755'  # <--- Paste Video ID here
 ```
 
-#### ⚙️ User Settings
+#### User Settings
 
 Adjust these variables at the top of the script:
 
@@ -109,7 +109,7 @@ TIMELINES = [
 python ithinkfinal3.py
 ```
 
-## 🧠 Core Features
+##  Core Features
 
 ### Hybrid Pagination
 Overcomes Facebook's scroll limits by combining:
@@ -134,12 +134,8 @@ Uses a 3-step fallback strategy (Feed Data → Deep Dive API → HTML Scraping) 
 | `comments_json` | JSON list of comments |
 | `url` | Direct post link |
 
-## ⚠️ Safety Features
+## Safety Features
 
 - **Checkpointing:** Saves progress to `_facebook_cursor.json`. Restarting the script resumes exactly where it left off.
 - **Rate Limiting:** Auto-pauses (5 mins) after every 100 posts.
 - **Session Checks:** Validates cookies before major batch operations.
-
-## License
-
-MIT License

@@ -24,28 +24,68 @@ pip install requests
 
 ### 3. Configuration (`ithinkfinal3.py`)
 
-#### Required Identifiers
+#### ⚙️ Configuration: Retrieving GraphQL Doc IDs
 
-You must inspect network traffic (F12 > Network) while browsing Facebook to find these IDs.
+Facebook frequently rotates their GraphQL Document IDs. If the scraper returns 400 Bad Request or fails to fetch data, you likely need to update the `doc_id` constants in the main script.
+
+**Prerequisite**
+- A modern web browser (Google Chrome, Edge, or Brave).
+- An active Facebook session.
+
+**General Extraction Method**
+1.  Navigate to the target Facebook profile (e.g., `https://www.facebook.com/tdp.ncbn.official`).
+2.  Open **Developer Tools** by pressing `F12` or right-clicking the page and selecting **Inspect**.
+3.  Navigate to the **Network** tab.
+4.  In the filter search box, type `graphql`.
+    *   *Pro Tip: The relevant data queries (Timeline/Feed) usually have the largest payloads, so look for the query with the largest size.*
+
+#### 1. Finding `TIMELINE_DOC_ID` (Filtered Doc ID)
+*Used for paginating through the main post feed.*
+
+1.  Clear the Network log (🚫 icon).
+2.  Scroll down the profile timeline until a new batch of posts loads.
+3.  Look for a POST request with the largest size.
+4.  Select the request and view the **Payload** (or Request) tab.
+5.  Verify the `fb_api_req_friendly_name` is `ProfileCometTimelineFeedRefetchQuery`.
+6.  Copy the numeric string associated with the `doc_id` key.
+
+#### 2. Finding `COMMENT_DOC_ID`
+*Used for fetching comments on a specific post.*
+
+1.  Clear the Network log.
+2.  Locate any post with comments and click **"View more comments"**.
+3.  Select the new network request.
+4.  Verify the `fb_api_req_friendly_name` is `CometUFIFeedbackConnectionQuery` (or `CometUFIFetchComments`).
+5.  Copy the `doc_id`.
+
+#### 3. Finding `VIDEO_DOC_ID`
+*Used for extracting view counts from Reels and Videos.*
+
+1.  Clear the Network log.
+2.  Click on any video or Reel to open it in **Theater Mode** (overlay view).
+3.  Look for requests with `fb_api_req_friendly_name` matching `CometVideoDeepDiveRootQuery` or `VideoPlayerStreamInfoQuery`.
+    *   *Note: There may be multiple video-related requests; look for the one containing `videoID` in the variables.*
+4.  Copy the `doc_id`.
+
+**Configuration Update**
+Once extracted, update the variables in your script:
 
 ```python
-TARGET_ACCOUNT = 'whitehouse'       # Page username from URL
-TARGET_ID = '123456789'             # Numeric Page ID (Found in page source or "About")
+# ithinkfinal3.py
 
-# GraphQL Doc IDs (Found in Network tab "graphql" requests body)
-FILTERED_DOC_ID = '...'  # Search for "ProfileCometTimelineFeedRefetchQuery"
-VIDEO_DOC_ID    = '...'  # Search for video metric queries
-COMMENT_DOC_ID  = '...'  # Search for comment pagination queries
+FILTERED_DOC_ID = '25560331103655089'  # <--- Paste Timeline ID here
+COMMENT_DOC_ID  = '25515916584706508'  # <--- Paste Comment ID here
+VIDEO_DOC_ID    = '25334326422853755'  # <--- Paste Video ID here
 ```
 
-#### User Preferences
+#### ⚙️ User Settings
 
-Adjust these variables at the top of the script to match your research needs:
+Adjust these variables at the top of the script:
 
 ```python
-MAX_COMMENTS_PER_POST = 40    # Number of comments to scrape per post
-API_SAFETY_LIMIT = 5000       # Max API calls before auto-stop
-MAX_PAGES_PER_SESSION = 2000  # Max pages to scroll
+MAX_COMMENTS_PER_POST = 40    # Stop after X comments per post
+API_SAFETY_LIMIT = 5000       # Safety stop after X API calls
+MAX_PAGES_PER_SESSION = 2000  # How many "pages" to scroll
 ```
 
 #### Timelines

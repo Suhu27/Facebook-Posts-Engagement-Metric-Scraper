@@ -11,7 +11,7 @@ from http.cookiejar import MozillaCookieJar
 from datetime import datetime, timezone
 
 # ==============================================================================
-# 🔧 CONFIGURATION
+#  CONFIGURATION
 # ==============================================================================
 
 # CHANGE THIS FOR EACH ACCOUNT
@@ -115,7 +115,7 @@ class FacebookScraper:
             rev = re.search(r'"client_revision":(\d+),', html)
             
             if not dtsg or not lsd:
-                print("❌ Auth tokens not found. Check cookies."); return False
+                print(" Auth tokens not found. Check cookies."); return False
             
             self.context = {
                 'fb_dtsg': dtsg.group(1),
@@ -126,7 +126,7 @@ class FacebookScraper:
             print(f" Authenticated (User: {self.context['__user']})")
             return True
         except Exception as e:
-            print(f"❌ Handshake Error: {e}"); return False
+            print(f" Handshake Error: {e}"); return False
 
     def graphql_request(self, doc_id, variables):
         payload = {
@@ -451,7 +451,7 @@ class FacebookScraper:
             while page_num <= MAX_PAGES_PER_SESSION:
                 if page_num % 50 == 0:
                     if not self.validate_session():
-                        print("\n❌ Session Expired. Saving & Exiting.")
+                        print("\n Session Expired. Saving & Exiting.")
                         self.save_checkpoint(variables['cursor'], idx, variables.get('beforeTime'))
                         sys.exit(1)
 
@@ -465,11 +465,11 @@ class FacebookScraper:
                     data = self.graphql_request(FILTERED_DOC_ID, variables)
                     if data: break
                     if attempt < 2:
-                        print(f"⚠️ Network Hiccup. Retrying {attempt+1}/3...")
+                        print(f" Network Hiccup. Retrying {attempt+1}/3...")
                         time.sleep(5)
                 
                 if not data:
-                    print("❌ API Error. Saving Checkpoint")
+                    print(" API Error. Saving Checkpoint")
                     self.save_checkpoint(variables['cursor'], idx, variables.get('beforeTime'))
                     break
 
@@ -483,7 +483,7 @@ class FacebookScraper:
                 elif posts:
                     # ✅ CORRECT FIX: Use MIN timestamp to avoid duplicates/loops
                     earliest_ts = min(int(p['date_obj'].timestamp()) for p in posts)
-                    print(f"   🔄 Hybrid Step: Manual Jump to {datetime.fromtimestamp(earliest_ts, timezone.utc).date()}...")
+                    print(f"    Hybrid Step: Manual Jump to {datetime.fromtimestamp(earliest_ts, timezone.utc).date()}...")
                     variables['beforeTime'] = earliest_ts - 1
                     variables['cursor'] = None
                     self.current_before_time = earliest_ts - 1
@@ -503,7 +503,7 @@ class FacebookScraper:
                 for p in posts:
                     dt = p['date_obj']
                     if dt < tl['start']: 
-                        print(f"   🛑 Reached Start Date ({dt.date()}). Stopping Timeline.")
+                        print(f"    Reached Start Date ({dt.date()}). Stopping Timeline.")
                         next_cursor = None
                         variables['cursor'] = None
                         posts = [] 
@@ -540,11 +540,11 @@ class FacebookScraper:
                         
                         if self.stats['posts'] > 0 and self.stats['posts'] % 100 == 0:
                             pause = random.uniform(300, 400)
-                            print(f"\n☕ Taking a safety break for {int(pause/60)} minutes...")
+                            print(f"\n Taking a safety break for {int(pause/60)} minutes...")
                             time.sleep(pause)
 
                     except Exception as e:
-                        print(f"   ⚠️ Error: {e}")
+                        print(f"    Error: {e}")
 
                 if not next_cursor and not posts: break
                 
@@ -552,7 +552,7 @@ class FacebookScraper:
                 page_num += 1
                 time.sleep(random.uniform(2, 5))
             
-            print(f"✅ Timeline {tl['name']} Completed.")
+            print(f" Timeline {tl['name']} Completed.")
 
 if __name__ == "__main__":
     bot = FacebookScraper()
